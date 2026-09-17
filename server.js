@@ -17,11 +17,15 @@ io.on('connection', (socket) => {
     socket.emit('queue-update', waitingGuests);
   });
 
-  socket.on('request-agent', (guestData) => {
-    const guestRequest = { guestId: socket.id, source: guestData.source };
-    waitingGuests.push(guestRequest);
-    io.to(Array.from(availableHosts)).emit('new-guest-waiting', guestRequest);
-  });
+ socket.on('request-agent', (guestData) => {
+  const guestRequest = { 
+    guestId: socket.id, 
+    source: guestData.source,
+    profile: guestData.profile // Captures the new form data
+  };
+  waitingGuests.push(guestRequest);
+  io.to(Array.from(availableHosts)).emit('new-guest-waiting', guestRequest);
+});
 
   socket.on('accept-guest', (guestId) => {
     const roomId = `room_${guestId}_${socket.id}`;
